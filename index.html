@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HydroSense — Every Drop Accountable</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #001520;
+  --navy2: #002233;
+  --navy3: #003348;
+  --teal: #00B4AE;
+  --teal2: #00D4CD;
+  --emerald: #00C48C;
+  --coral: #FF6B6B;
+  --white: #F0FAFA;
+  --muted: #6B9DAA;
+  --card: #001F30;
+  --border: rgba(0,180,174,0.18);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--navy); color: var(--white); font-family: 'DM Sans', sans-serif; overflow-x: hidden; line-height: 1.6; }
+h1,h2,h3,h4 { font-family: 'Trebuchet MS', sans-serif; }
+
+/* NAVBAR */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 0 5%; height: 64px; display: flex; align-items: center; justify-content: space-between; transition: background 0.4s, box-shadow 0.4s; }
+nav.scrolled { background: rgba(0,21,32,0.97); box-shadow: 0 2px 24px rgba(0,0,0,0.4); backdrop-filter: blur(12px); }
+.nav-logo { font-family: 'Trebuchet MS', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.nav-logo span { color: var(--teal); }
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--teal); }
+.btn-nav { background: var(--teal) !important; color: var(--navy) !important; padding: 8px 20px; border-radius: 4px; font-weight: 700 !important; transition: background 0.2s, transform 0.2s; }
+.btn-nav:hover { background: var(--teal2) !important; transform: translateY(-1px); }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+.hamburger span { display: block; width: 26px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+.mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(0,21,32,0.99); padding: 1.5rem 5%; flex-direction: column; gap: 1rem; border-bottom: 1px solid var(--border); z-index: 999; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { color: var(--white); text-decoration: none; font-size: 1.05rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+
+/* HERO */
+#hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 100px 5% 60px; }
+.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.drop { position: absolute; width: 3px; height: 18px; background: linear-gradient(to bottom, transparent, var(--teal)); border-radius: 3px; animation: fall linear infinite; opacity: 0; }
+@keyframes fall { 0% { transform: translateY(-20px); opacity: 0; } 10% { opacity: 0.7; } 90% { opacity: 0.4; } 100% { transform: translateY(100vh); opacity: 0; } }
+.rwanda-map { position: absolute; right: 2%; top: 50%; transform: translateY(-50%); width: min(500px, 45vw); opacity: 0.05; pointer-events: none; }
+.hero-content { position: relative; z-index: 1; max-width: 640px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,180,174,0.1); border: 1px solid rgba(0,180,174,0.3); border-radius: 40px; padding: 6px 16px; font-size: 0.78rem; color: var(--teal); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem; }
+.hero-badge::before { content: ''; width: 7px; height: 7px; background: var(--emerald); border-radius: 50%; animation: pdot 2s ease-in-out infinite; }
+@keyframes pdot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,196,140,0.5); } 50% { box-shadow: 0 0 0 6px rgba(0,196,140,0); } }
+.hero h1 { font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1.05; font-weight: 700; color: var(--white); margin-bottom: 0.6rem; }
+.hero h1 .ac { color: var(--teal); }
+.hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); color: #8ab4bf; max-width: 520px; margin-bottom: 2.2rem; line-height: 1.7; }
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-p { background: var(--teal); color: var(--navy); padding: 14px 32px; border-radius: 5px; font-weight: 700; font-size: 0.95rem; text-decoration: none; border: none; cursor: pointer; transition: all 0.25s; font-family: 'Trebuchet MS', sans-serif; }
+.btn-p:hover { background: var(--teal2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,180,174,0.35); }
+.btn-o { background: transparent; color: var(--white); padding: 14px 32px; border-radius: 5px; font-weight: 600; font-size: 0.95rem; text-decoration: none; border: 1.5px solid rgba(255,255,255,0.25); cursor: pointer; transition: all 0.25s; font-family: 'Trebuchet MS', sans-serif; }
+.btn-o:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+.hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; z-index: 1; opacity: 0.4; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); animation: bounce 2.4s ease-in-out infinite; }
+.hero-scroll::after { content: '↓'; font-size: 1rem; }
+@keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+
+/* SHARED */
+section { padding: 100px 5%; }
+.stag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--teal); font-weight: 700; margin-bottom: 0.8rem; }
+.stitle { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; margin-bottom: 1.2rem; color: var(--white); }
+.stitle .hl { color: var(--teal); }
+.ssub { color: #7ba8b3; max-width: 560px; line-height: 1.7; font-size: 1.02rem; }
+.reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+.rev-l { opacity: 0; transform: translateX(-36px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.rev-l.visible { opacity: 1; transform: none; }
+.rev-r { opacity: 0; transform: translateX(36px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.rev-r.visible { opacity: 1; transform: none; }
+
+/* PROBLEM */
+#problem { background: #000e18; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin: 3rem 0 2rem; }
+.scard { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 2rem 1.5rem; transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+.scard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--teal); }
+.scard.coral::before { background: var(--coral); }
+.scard.em::before { background: var(--emerald); }
+.scard.am::before { background: #FFB347; }
+.scard:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.3); }
+.snum { font-family: 'Trebuchet MS', sans-serif; font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700; color: var(--teal); line-height: 1; margin-bottom: 0.4rem; }
+.scard.coral .snum { color: var(--coral); }
+.scard.em .snum { color: var(--emerald); }
+.scard.am .snum { color: #FFB347; }
+.slabel { font-size: 0.88rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.8rem; }
+.sdesc { font-size: 0.88rem; color: #6B9DAA; line-height: 1.6; }
+.sources { font-size: 0.72rem; color: #3d6877; line-height: 1.6; }
+.alert-bar { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.25); border-radius: 8px; padding: 0.8rem 1.2rem; display: flex; align-items: center; gap: 10px; color: #ff9090; font-size: 0.85rem; margin-bottom: 0; animation: apulse 3s ease-in-out infinite; }
+@keyframes apulse { 0%,100% { border-color: rgba(255,107,107,0.25); } 50% { border-color: rgba(255,107,107,0.6); } }
+.adot { width: 8px; height: 8px; background: var(--coral); border-radius: 50%; animation: pdot 1.5s ease-in-out infinite; flex-shrink: 0; }
+
+/* SOLUTION */
+#solution { background: #f4fafb; }
+#solution .stag { color: var(--teal); }
+#solution .stitle { color: var(--navy); }
+#solution .ssub { color: #3a6672; }
+.sol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
+.sol-text p { color: #2a4f5a; line-height: 1.75; margin-bottom: 1.2rem; font-size: 1.02rem; }
+.feat { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.2rem; }
+.ficon { width: 42px; height: 42px; background: rgba(0,180,174,0.12); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; color: var(--teal); }
+.ftext h4 { color: var(--navy); font-size: 0.95rem; margin-bottom: 0.2rem; }
+.ftext p { color: #3a6672; font-size: 0.88rem; margin: 0; }
+.pipe-wrap { background: var(--navy); border-radius: 14px; padding: 2rem 1.5rem; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.pipe-svg { width: 100%; height: auto; }
+
+/* CASE STUDY */
+#casestudy { background: var(--navy); }
+.cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 3rem 0; }
+.ccard { border-radius: 12px; padding: 2.2rem; border: 1px solid; }
+.ccard.before { background: rgba(255,107,107,0.05); border-color: rgba(255,107,107,0.2); }
+.ccard.after { background: rgba(0,196,140,0.05); border-color: rgba(0,196,140,0.25); }
+.ccard h3 { font-size: 1rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.4rem; }
+.ccard.before h3 { color: var(--coral); }
+.ccard.after h3 { color: var(--emerald); }
+.citem { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; font-size: 0.92rem; color: #8ab4bf; line-height: 1.5; }
+.ccard.before .citem::before { content: '✕'; color: var(--coral); flex-shrink: 0; font-size: 0.8rem; margin-top: 2px; }
+.ccard.after .citem::before { content: '✓'; color: var(--emerald); flex-shrink: 0; font-size: 0.8rem; margin-top: 2px; }
+.vbox { background: rgba(0,180,174,0.07); border: 1px solid var(--border); border-radius: 10px; padding: 2rem; margin-bottom: 3rem; }
+.vbox p { color: #8ab4bf; line-height: 1.75; font-size: 0.98rem; }
+.vbox p strong { color: var(--teal); }
+.af-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+.af-stat { text-align: center; padding: 1.5rem; background: var(--card); border-radius: 10px; border: 1px solid var(--border); }
+.af-stat .n { font-family: 'Trebuchet MS', sans-serif; font-size: 2rem; font-weight: 700; color: var(--teal); display: block; }
+.af-stat .l { font-size: 0.82rem; color: var(--muted); margin-top: 4px; display: block; }
+
+/* IMPACT */
+#impact { background: linear-gradient(135deg, #003845 0%, #005F55 50%, #003838 100%); position: relative; overflow: hidden; }
+#impact::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(0,180,174,0.12) 0%, transparent 60%), radial-gradient(ellipse at 80% 50%, rgba(0,196,140,0.1) 0%, transparent 60%); }
+.imp-grid { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 2rem; text-align: center; }
+.imp-num { font-family: 'Trebuchet MS', sans-serif; font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 700; color: var(--white); line-height: 1; margin-bottom: 0.5rem; display: block; }
+.imp-label { font-size: 0.88rem; color: rgba(240,250,250,0.65); line-height: 1.5; }
+
+/* STORY */
+#story { background: #000e18; }
+.story-intro { max-width: 680px; color: #8ab4bf; line-height: 1.75; font-size: 1.02rem; margin-bottom: 3.5rem; }
+.founders { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.fcard { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 2.5rem; position: relative; transition: transform 0.3s, box-shadow 0.3s; }
+.fcard:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+.favatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--emerald)); display: flex; align-items: center; justify-content: center; font-family: 'Trebuchet MS', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--navy); margin-bottom: 1.4rem; position: relative; }
+.favatar::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid rgba(0,180,174,0.3); }
+.fflag { position: absolute; top: 2rem; right: 2rem; font-size: 1.6rem; }
+.fname { font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; }
+.frole { font-size: 0.82rem; color: var(--teal); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+.forg { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.2rem; }
+.fbio { font-size: 0.9rem; color: #6B9DAA; line-height: 1.65; }
+.ftag { display: inline-block; margin-top: 1.2rem; background: rgba(0,196,140,0.1); border: 1px solid rgba(0,196,140,0.25); color: var(--emerald); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 12px; border-radius: 40px; }
+
+/* CONTACT */
+#contact { background: var(--navy); }
+.ct-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; margin-top: 3rem; }
+.ct-info p { color: #8ab4bf; line-height: 1.75; margin-bottom: 2rem; font-size: 1rem; }
+.ct-links { display: flex; flex-direction: column; gap: 1rem; }
+.ct-link { display: flex; align-items: center; gap: 12px; color: var(--muted); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+.ct-link:hover { color: var(--teal); }
+.ct-icon { width: 38px; height: 38px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.cf { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 2.5rem; }
+.fg { margin-bottom: 1.4rem; }
+.fg label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+.fg input, .fg textarea, .fg select { width: 100%; background: rgba(0,180,174,0.05); border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+.fg input:focus, .fg textarea:focus, .fg select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,180,174,0.12); }
+.fg textarea { resize: vertical; min-height: 110px; }
+.fg select option { background: var(--navy2); }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.bsub { width: 100%; background: var(--teal); color: var(--navy); padding: 14px; border: none; border-radius: 6px; font-family: 'Trebuchet MS', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.25s; }
+.bsub:hover { background: var(--teal2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,180,174,0.3); }
+.fsuccess { display: none; text-align: center; padding: 2rem; color: var(--emerald); font-size: 1.05rem; }
+.fsuccess .ck { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+/* FOOTER */
+footer { background: #000a10; border-top: 1px solid var(--border); padding: 3rem 5% 2rem; }
+.ft-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; margin-bottom: 2.5rem; }
+.ft-brand p { color: var(--muted); font-size: 0.88rem; margin-top: 0.5rem; max-width: 280px; line-height: 1.6; }
+.ft-links { display: flex; flex-direction: column; gap: 0.6rem; }
+.ft-links a { color: var(--muted); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+.ft-links a:hover { color: var(--teal); }
+.ft-links h4 { color: var(--white); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
+.ft-bot { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.ft-bot p { font-size: 0.8rem; color: #3d6877; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sol-grid, .cmp-grid, .ct-grid, .founders { grid-template-columns: 1fr; }
+  .af-stats { grid-template-columns: 1fr 1fr; }
+  .rwanda-map { display: none; }
+}
+@media (max-width: 640px) {
+  nav { padding: 0 4%; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  section { padding: 70px 4%; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .af-stats { grid-template-columns: 1fr; }
+  .frow { grid-template-columns: 1fr; }
+  .ft-top { flex-direction: column; }
+  .ft-bot { flex-direction: column; text-align: center; }
+}
+@media (max-width: 400px) { .stat-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <svg width="22" height="28" viewBox="0 0 24 30" fill="none">
+      <path d="M12 2 C12 2 3 13 3 18 C3 23 7.03 27 12 27 C16.97 27 21 23 21 18 C21 13 12 2 12 2Z" fill="#00B4AE"/>
+      <path d="M8 20 Q12 16 16 20" stroke="#001520" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    </svg>
+    Hydro<span>Sense</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#problem">The Problem</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#casestudy">Rwanda</a></li>
+    <li><a href="#story">About</a></li>
+    <li><a href="#contact" class="btn-nav">Partner With Us</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#problem" onclick="closeMenu()">The Problem</a>
+  <a href="#solution" onclick="closeMenu()">Our Solution</a>
+  <a href="#casestudy" onclick="closeMenu()">Rwanda Case Study</a>
+  <a href="#impact" onclick="closeMenu()">Impact</a>
+  <a href="#story" onclick="closeMenu()">Our Story</a>
+  <a href="#contact" onclick="closeMenu()">Partner With Us</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div id="drops"></div>
+    <!-- Rwanda map outline watermark -->
+    <svg class="rwanda-map" viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M62,38 L82,28 L112,33 L132,23 L162,28 L188,18 L212,33 L232,28 L252,48 L262,78 L257,108 L247,138 L242,168 L222,193 L202,213 L177,228 L152,243 L127,238 L102,248 L77,238 L57,218 L42,193 L37,163 L32,138 L37,108 L47,78 L62,58 Z" stroke="#00B4AE" stroke-width="1.5" fill="rgba(0,180,174,0.03)"/>
+      <circle cx="148" cy="128" r="6" fill="#00B4AE" opacity="0.4"/>
+      <text x="160" y="132" fill="#00B4AE" font-size="10" font-family="sans-serif" opacity="0.6">Kigali</text>
+      <line x1="148" y1="134" x2="148" y2="165" stroke="#00B4AE" stroke-width="1" opacity="0.3" stroke-dasharray="3,3"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">Live · Kigali, Rwanda 🇷🇼</div>
+    <div class="hero">
+      <h1>Every Drop<br><span class="ac">Accountable.</span></h1>
+    </div>
+    <p class="hero-sub">Rwanda loses 43% of its treated water before it reaches a single tap — costing RWF 2.1 billion every year. HydroSense finds the loss in real time, so every litre reaches the people it was built for.</p>
+    <div class="hero-ctas">
+      <a href="#solution" class="btn-p">How We Do It</a>
+      <a href="#contact" class="btn-o">Partner With Us</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="reveal" style="margin-bottom:1.5rem">
+    <div class="stag">The Crisis</div>
+    <h2 class="stitle">Africa's Water Loss<br>Crisis Is <span class="hl">Silent</span></h2>
+    <p class="ssub">Across Sub-Saharan Africa, water utilities are producing safe, treated water and watching it vanish — into broken pipes, undetected leaks, and unchecked infrastructure. The losses are invisible. The consequences are not.</p>
+  </div>
+  <div class="alert-bar reveal" style="margin-bottom:2rem;">
+    <div class="adot"></div>
+    <strong>ACTIVE CRISIS —</strong>&nbsp;Rwanda is losing water right now. The infrastructure exists. The detection does not.
+  </div>
+  <div class="stat-grid">
+    <div class="scard reveal" style="transition-delay:0.1s">
+      <div class="snum">43%</div>
+      <div class="slabel">Non-Revenue Water Rate</div>
+      <div class="sdesc">Nearly half of all water Rwanda produces is lost before it is billed — through leaks, burst pipes, and undetected distribution failures.</div>
+    </div>
+    <div class="scard coral reveal" style="transition-delay:0.2s">
+      <div class="snum">RWF 2.1B</div>
+      <div class="slabel">Annual Revenue Lost</div>
+      <div class="sdesc">Rwanda's national water utility WASAC loses over RWF 2.1 billion every year to water that leaves the network and is never recovered.</div>
+    </div>
+    <div class="scard am reveal" style="transition-delay:0.3s">
+      <div class="snum">72 hrs</div>
+      <div class="slabel">Average Detection Time</div>
+      <div class="sdesc">Today, a burst pipe is identified when a resident calls to complain. By then, millions of litres are gone. Manual methods cannot solve this.</div>
+    </div>
+    <div class="scard em reveal" style="transition-delay:0.4s">
+      <div class="snum">27%</div>
+      <div class="slabel">Households Affected</div>
+      <div class="sdesc">Over a quarter of urban Rwandan households experience unreliable water supply — a direct consequence of distribution losses going undetected.</div>
+    </div>
+  </div>
+  <p class="sources reveal">Sources: WASAC Annual Report 2023 · MININFRA Infrastructure Development Report 2022 · World Bank WASH Data 2023 · UN-Habitat Urban Water Report 2022</p>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="stag reveal">Our Approach</div>
+  <h2 class="stitle reveal" style="color:var(--navy)">We Find the Loss.<br><span style="color:var(--teal)">Instantly.</span></h2>
+  <div class="sol-grid">
+    <div class="sol-text rev-l">
+      <p>HydroSense monitors every checkpoint in a city's water distribution network — from the treatment plant all the way to the household meter. We compare what enters each segment against what leaves it, continuously, in real time.</p>
+      <p>When the numbers don't match, we know immediately. We know which segment is losing water, how much is being lost, and the rate at which it is flowing out. That information reaches the utility's operations team in under 500 milliseconds.</p>
+      <p>No waiting for a call. No sending engineers to walk pipes. No guessing. The exact location — identified, flagged, ready for repair.</p>
+      <div class="feat">
+        <div class="ficon">📍</div>
+        <div class="ftext">
+          <h4>Precise Segment Identification</h4>
+          <p>We pinpoint the exact section of pipe where water is being lost — not just the general area.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="ficon">⚡</div>
+        <div class="ftext">
+          <h4>500ms Alert Latency</h4>
+          <p>From leak to alert in half a second. Not 72 hours. Repair crews are dispatched while the leak is fresh.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="ficon">🌍</div>
+        <div class="ftext">
+          <h4>Built for African Infrastructure</h4>
+          <p>Designed specifically for the distribution networks found across Sub-Saharan African cities — not adapted from European systems.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pipe-wrap rev-r">
+      <svg class="pipe-svg" viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <linearGradient id="pg" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#00B4AE;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#003845;stop-opacity:0.3"/>
+          </linearGradient>
+        </defs>
+        <!-- pipe backbone -->
+        <rect x="153" y="45" width="14" height="310" rx="7" fill="#003845"/>
+        <rect x="154" y="45" width="12" height="310" rx="6" fill="url(#pg)" opacity="0.5">
+          <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- flow particles -->
+        <circle cx="160" cy="50" r="4" fill="#00B4AE">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,300;0,0" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="1;0.2;1" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="160" cy="90" r="3" fill="#00C48C">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,220;0,0" dur="3s" begin="1s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0.1;0.8" dur="3s" begin="1s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Node 1 Treatment Plant -->
+        <circle cx="160" cy="65" r="28" fill="#002233" stroke="#00B4AE" stroke-width="2.5" filter="url(#glow)"/>
+        <text x="160" y="59" text-anchor="middle" font-size="16">🏭</text>
+        <text x="160" y="74" text-anchor="middle" font-size="6.5" fill="#00B4AE" font-weight="bold" letter-spacing="1">LIVE</text>
+        <circle cx="184" cy="52" r="4" fill="#00C48C"><animate attributeName="opacity" values="1;0.3;1" dur="1.8s" repeatCount="indefinite"/></circle>
+        <text x="200" y="61" font-size="9" fill="#8ab4bf" font-weight="bold">Treatment Plant</text>
+        <text x="200" y="73" font-size="7.5" fill="#3d6877">Water Source</text>
+        <!-- Node 2 Reservoir -->
+        <circle cx="160" cy="145" r="28" fill="#002233" stroke="#00B4AE" stroke-width="2.5" filter="url(#glow)"/>
+        <text x="160" y="139" text-anchor="middle" font-size="16">🗃️</text>
+        <text x="160" y="154" text-anchor="middle" font-size="6.5" fill="#00B4AE" font-weight="bold" letter-spacing="1">LIVE</text>
+        <circle cx="184" cy="132" r="4" fill="#00C48C"><animate attributeName="opacity" values="1;0.3;1" dur="1.8s" begin="0.3s" repeatCount="indefinite"/></circle>
+        <text x="200" y="141" font-size="9" fill="#8ab4bf" font-weight="bold">Reservoir</text>
+        <text x="200" y="153" font-size="7.5" fill="#3d6877">Storage</text>
+        <!-- LEAK between 2 and 3 -->
+        <rect x="118" y="178" width="84" height="30" rx="5" fill="rgba(255,107,107,0.12)" stroke="rgba(255,107,107,0.5)" stroke-width="1.5">
+          <animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <circle cx="134" cy="193" r="4" fill="#FF6B6B">
+          <animate attributeName="r" values="4;7;4" dur="1.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <text x="144" y="197" font-size="8" fill="#FF6B6B" font-weight="bold">LEAK DETECTED</text>
+        <circle cx="166" cy="192" r="2.5" fill="#FF6B6B">
+          <animateTransform attributeName="transform" type="translate" values="0,0;-18,32" dur="1.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="1;0" dur="1.2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Node 3 Distribution -->
+        <circle cx="160" cy="230" r="28" fill="#002233" stroke="#00B4AE" stroke-width="2.5" filter="url(#glow)"/>
+        <text x="160" y="224" text-anchor="middle" font-size="16">⚙️</text>
+        <text x="160" y="239" text-anchor="middle" font-size="6.5" fill="#00B4AE" font-weight="bold" letter-spacing="1">LIVE</text>
+        <circle cx="184" cy="217" r="4" fill="#00C48C"><animate attributeName="opacity" values="1;0.3;1" dur="1.8s" begin="0.6s" repeatCount="indefinite"/></circle>
+        <text x="200" y="226" font-size="9" fill="#8ab4bf" font-weight="bold">Distribution</text>
+        <text x="200" y="238" font-size="7.5" fill="#3d6877">Chamber</text>
+        <!-- Node 4 planned -->
+        <circle cx="160" cy="298" r="22" fill="#001520" stroke="#2a4f5a" stroke-width="1.5" opacity="0.55"/>
+        <text x="160" y="292" text-anchor="middle" font-size="13" fill="#3d6877" opacity="0.7">🔧</text>
+        <text x="160" y="305" text-anchor="middle" font-size="6" fill="#3d6877">PLANNED</text>
+        <text x="192" y="297" font-size="8" fill="#3d6877">Valve Box</text>
+        <!-- Node 5 planned -->
+        <circle cx="160" cy="352" r="17" fill="#001520" stroke="#2a4f5a" stroke-width="1" opacity="0.35"/>
+        <text x="160" y="347" text-anchor="middle" font-size="11" fill="#3d6877" opacity="0.45">🏠</text>
+        <text x="160" y="358" text-anchor="middle" font-size="5.5" fill="#3d6877" opacity="0.45">PLANNED</text>
+        <text x="186" y="352" font-size="7.5" fill="#3d6877" opacity="0.5">Household</text>
+        <!-- legend -->
+        <circle cx="25" cy="382" r="5" fill="#00C48C"/>
+        <text x="35" y="386" font-size="8" fill="#8ab4bf">Live monitoring</text>
+        <circle cx="130" cy="382" r="5" fill="#2a4f5a"/>
+        <text x="140" y="386" font-size="8" fill="#3d6877">Planned</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY -->
+<section id="casestudy">
+  <div class="stag reveal">Case Study</div>
+  <h2 class="stitle reveal">Starting in Rwanda.<br>Built for <span class="hl">Africa.</span></h2>
+  <p class="ssub reveal">Rwanda is where we prove the concept. The data is real, the problem is urgent, and the government has committed to action — with a national target to halve water losses by 2030.</p>
+  <div class="cmp-grid">
+    <div class="ccard before rev-l">
+      <h3>Without HydroSense</h3>
+      <div class="citem">43% of water produced never reaches a bill</div>
+      <div class="citem">Leaks go undetected for 72 hours or more</div>
+      <div class="citem">RWF 2.1 billion in annual utility revenue lost</div>
+      <div class="citem">Families billed for water that leaked before reaching their tap</div>
+      <div class="citem">Engineers dispatched with no data — searching blind</div>
+      <div class="citem">Rwanda's 2030 NRW target impossible to achieve</div>
+    </div>
+    <div class="ccard after rev-r">
+      <h3>With HydroSense</h3>
+      <div class="citem">Leak located in the exact pipe segment in 500 milliseconds</div>
+      <div class="citem">Repair crews dispatched with precise location data</div>
+      <div class="citem">WASAC recovers lost revenue — reinvested in expansion</div>
+      <div class="citem">Families receive the water they are paying for</div>
+      <div class="citem">Operations teams work from live data, not guesswork</div>
+      <div class="citem">Rwanda's 43% → 20% NRW target becomes achievable</div>
+    </div>
+  </div>
+  <div class="vbox reveal">
+    <p>Rwanda's Ministry of Infrastructure (MININFRA) has committed to reducing Non-Revenue Water from <strong>43% to 20% by 2030</strong> as a core pillar of <strong>Vision 2050</strong>. That goal cannot be achieved with manual inspection methods that rely on resident complaints and physical pipe walks. It requires real-time data, automated detection, and instant alerting. HydroSense is the technology that makes that target achievable — and Rwanda is our proof point for the entire continent.</p>
+  </div>
+  <div class="af-stats">
+    <div class="af-stat reveal" style="transition-delay:0.1s"><span class="n">54</span><span class="l">National water utilities across Sub-Saharan Africa</span></div>
+    <div class="af-stat reveal" style="transition-delay:0.2s"><span class="n">35%</span><span class="l">Average NRW rate across African utilities</span></div>
+    <div class="af-stat reveal" style="transition-delay:0.3s"><span class="n">200M+</span><span class="l">Africans without reliable water access</span></div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="stag reveal" style="color:rgba(240,250,250,0.7)">Our Impact</div>
+  <h2 class="stitle reveal" style="margin-bottom:3rem">The Numbers<br>Behind the Mission</h2>
+  <div class="imp-grid">
+    <div class="reveal" style="transition-delay:0.05s;text-align:center">
+      <span class="imp-num">500ms</span>
+      <div class="imp-label">Alert latency<br>from leak to notification</div>
+    </div>
+    <div class="reveal" style="transition-delay:0.15s;text-align:center">
+      <span class="imp-num">43→20%</span>
+      <div class="imp-label">Rwanda's NRW reduction target<br>HydroSense makes it achievable</div>
+    </div>
+    <div class="reveal" style="transition-delay:0.25s;text-align:center">
+      <span class="imp-num">RWF 2.1B</span>
+      <div class="imp-label">Annual revenue recoverable<br>by WASAC with HydroSense</div>
+    </div>
+    <div class="reveal" style="transition-delay:0.35s;text-align:center">
+      <span class="imp-num">200M+</span>
+      <div class="imp-label">Africans without reliable<br>water access we are fighting for</div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section id="story">
+  <div class="stag reveal">Our Story</div>
+  <h2 class="stitle reveal">Built by Africans.<br>For <span class="hl">Africa.</span></h2>
+  <p class="story-intro reveal">HydroSense was born at the African Leadership University in Kigali — where a student from Nigeria and a student from Rwanda looked at the same water crisis from two different sides of the continent and decided to build the solution. We did not read about this problem in a report. We lived it.</p>
+  <div class="founders">
+    <div class="fcard rev-l">
+      <div class="fflag">🇳🇬</div>
+      <div class="favatar">SI</div>
+      <div class="fname">Success Ituma</div>
+      <div class="frole">Co-Founder</div>
+      <div class="forg">Software Engineering Student · African Leadership University, Kigali</div>
+      <p class="fbio">Success grew up in Obuchiru Ezillo, a deeply underserved rural community in Ebonyi State, Nigeria — where pipe-borne water does not exist. His community relied on streams and boreholes. He taught himself to code, earned a Mastercard Foundation Scholarship, and came to ALU Rwanda. When he discovered that Rwanda was losing nearly half its treated water to undetected leaks, he could not look away. That is why HydroSense exists.</p>
+      <span class="ftag">Mastercard Foundation Scholar</span>
+    </div>
+    <div class="fcard rev-r">
+      <div class="fflag">🇷🇼</div>
+      <div class="favatar" style="background:linear-gradient(135deg,#00C48C,#00B4AE)">HI</div>
+      <div class="fname">Henriette Iraguha</div>
+      <div class="frole">Co-Founder</div>
+      <div class="forg">Software Engineering Student · African Leadership University, Kigali</div>
+      <p class="fbio">Henriette grew up in Kigali. Her family, like thousands of Rwandan households, regularly received WASAC water bills far higher than their actual consumption — charged for water that had leaked into the ground before it ever reached their tap. That frustration became the fuel for HydroSense.</p>
+      <span class="ftag">CodeXtreme Ingenious 2026 Winner 🏆</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="stag reveal">Get In Touch</div>
+  <h2 class="stitle reveal">Let's Fix Africa's Water<br><span class="hl">Together.</span></h2>
+  <div class="ct-grid">
+    <div class="rev-l">
+      <div class="ct-info">
+        <p>We are looking for water utilities, government agencies, NGOs, development banks, and impact investors who want to close the gap between water produced and water delivered.</p>
+        <p>Whether you want to pilot HydroSense in your distribution network, fund our expansion across the continent, or simply learn more — reach out.</p>
+      </div>
+      <div class="ct-links">
+        <a href="mailto:hello@hydrosense.rw" class="ct-link"><div class="ct-icon">✉️</div>hello@hydrosense.rw</a>
+        <a href="https://linkedin.com" class="ct-link" target="_blank"><div class="ct-icon">💼</div>linkedin.com/company/hydrosense-rw</a>
+        <a href="#" class="ct-link"><div class="ct-icon">📍</div>African Leadership University, Kigali, Rwanda</a>
+      </div>
+      <div style="margin-top:2rem;padding:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:10px;">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal);font-weight:700;margin-bottom:0.8rem;">Recognition</div>
+        <div style="font-size:0.9rem;color:#8ab4bf;line-height:1.7;">🏆 Winners — CodeXtreme Ingenious 2026<br>African Leadership University, Kigali, Rwanda</div>
+      </div>
+    </div>
+    <div class="rev-r">
+      <div class="cf" id="cForm">
+        <div class="frow">
+          <div class="fg"><label>Full Name</label><input type="text" placeholder="Your name" id="fname"></div>
+          <div class="fg"><label>Organisation</label><input type="text" placeholder="Company / Institution"></div>
+        </div>
+        <div class="fg"><label>Email Address</label><input type="email" placeholder="your@email.com" id="femail"></div>
+        <div class="fg">
+          <label>I am a...</label>
+          <select>
+            <option value="">Select your role</option>
+            <option>Water Utility / WASAC</option>
+            <option>Government Agency</option>
+            <option>NGO / Development Organisation</option>
+            <option>Impact Investor</option>
+            <option>Researcher / Academic</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message</label><textarea placeholder="Tell us about your interest in HydroSense — partnership, pilot, investment, or a question..."></textarea></div>
+        <button class="bsub" onclick="submitForm()">Send Message →</button>
+        <div class="fsuccess" id="fSuccess">
+          <span class="ck">✅</span>
+          <strong>Message received!</strong><br>We will get back to you within 48 hours.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:5rem;font-family:'Trebuchet MS',sans-serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--teal);font-style:italic;opacity:0.8;" class="reveal">
+    "Built in Africa. Built for Africa."
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-top">
+    <div class="ft-brand">
+      <a href="#hero" class="nav-logo" style="font-size:1.15rem;margin-bottom:0.6rem;display:inline-flex;">
+        <svg width="20" height="24" viewBox="0 0 24 30" fill="none" style="margin-right:8px"><path d="M12 2 C12 2 3 13 3 18 C3 23 7.03 27 12 27 C16.97 27 21 23 21 18 C21 13 12 2 12 2Z" fill="#00B4AE"/></svg>
+        Hydro<span>Sense</span>
+      </a>
+      <p>Real-time water loss detection for Africa's urban infrastructure. Every litre accountable.</p>
+    </div>
+    <div class="ft-links">
+      <h4>Navigation</h4>
+      <a href="#problem">The Problem</a>
+      <a href="#solution">Our Solution</a>
+      <a href="#casestudy">Rwanda Case Study</a>
+      <a href="#impact">Impact</a>
+      <a href="#story">Our Story</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="ft-links">
+      <h4>Contact</h4>
+      <a href="mailto:hello@hydrosense.rw">hello@hydrosense.rw</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">African Leadership University</a>
+      <a href="#">Kigali, Rwanda 🇷🇼</a>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <p>© 2026 HydroSense. Founded at African Leadership University, Kigali, Rwanda.</p>
+    <div style="font-size:0.82rem;color:var(--muted)">Built with ❤️ in Rwanda 🇷🇼</div>
+  </div>
+</footer>
+
+<script>
+// Navbar scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// Hamburger
+const ham = document.getElementById('hamburger');
+const mob = document.getElementById('mobileMenu');
+ham.addEventListener('click', () => { ham.classList.toggle('open'); mob.classList.toggle('open'); });
+function closeMenu() { ham.classList.remove('open'); mob.classList.remove('open'); }
+
+// Rain drops
+(function() {
+  const c = document.getElementById('drops');
+  for (let i = 0; i < 30; i++) {
+    const d = document.createElement('div');
+    d.className = 'drop';
+    d.style.cssText = `left:${Math.random()*100}%;animation-duration:${2.5+Math.random()*4}s;animation-delay:${Math.random()*6}s;height:${10+Math.random()*18}px;`;
+    c.appendChild(d);
+  }
+})();
+
+// Intersection observer
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .rev-l, .rev-r').forEach(el => obs.observe(el));
+
+// Active nav on scroll
+const sects = document.querySelectorAll('section[id]');
+const nlinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sects.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  nlinks.forEach(a => { a.style.color = a.getAttribute('href') === '#'+cur ? 'var(--teal)' : ''; });
+}, { passive: true });
+
+// Form submit
+function submitForm() {
+  const nm = document.getElementById('fname');
+  const em = document.getElementById('femail');
+  let ok = true;
+  [nm, em].forEach(f => { if (!f.value.trim()) { f.style.borderColor='#FF6B6B'; ok=false; } else { f.style.borderColor=''; } });
+  if (!ok) return;
+  document.querySelectorAll('#cForm .fg, #cForm .frow, #cForm .bsub').forEach(el => el.style.display='none');
+  document.getElementById('fSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>
